@@ -1,0 +1,28 @@
+networks:
+  app-net:
+
+services:
+  postgres_database:
+    image: postgres:13.16
+    env_file:
+      - .env
+    volumes:
+      - ./db-data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks:
+      - app-net
+
+  dbmate_migration:
+    image: amacneil/dbmate:latest
+    env_file:
+      - .env
+    profiles:
+      - tools
+    depends_on:
+      - postgres_database
+    networks:
+      - app-net
+    volumes:
+      - ./db/migrations:/db/migrations
+    entrypoint: ["dbmate", "--url", "${DATABASE_URL}", "-d", "/db/migrations"]

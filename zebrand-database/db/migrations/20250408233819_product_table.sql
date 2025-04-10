@@ -1,0 +1,15 @@
+-- migrate:up
+CREATE TABLE products (
+    id SERIAL PRIMARY KEY,
+    sku VARCHAR(10) NOT NULL UNIQUE,
+    name VARCHAR(60) NOT NULL,
+    price DECIMAL(10, 2) NOT NULL,
+    brand VARCHAR(60),
+    is_deleted BOOLEAN NOT NULL DEFAULT FALSE,
+    created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP WITH TIME ZONE,
+    deleted_at TIMESTAMP WITH TIME ZONE
+);
+
+-- migrate:down
+DROP TABLE IF EXISTS products;

@@ -1,0 +1,3 @@
+p, admin, /*, *
+p, guest, /api/v1/product/*, GET
+p, guest, /api/v1/product, GET
