@@ -13,10 +13,10 @@ class ProductRequest(BaseModel):
 
 class UpdateProductRequest(BaseModel):
 
-    sku: Optional[Annotated[str, Field(max_length=10, min_length=4)]]
-    name: Optional[Annotated[str, Field(max_length=60, min_length=4)]]
-    price: Optional[Annotated[Decimal, Field(max_digits=10, decimal_places=2, gt=0)]]
-    brand: Optional[Annotated[str, Field(max_length=60)]]
+    sku: Annotated[str, Field(max_length=10, min_length=4)] = None
+    name: Annotated[str, Field(max_length=60, min_length=4)] = None
+    price: Annotated[Decimal, Field(max_digits=10, decimal_places=2, gt=0)] = None
+    brand: Annotated[str, Field(max_length=60)] = None
 
 
 class ProductFilterParams(BaseModel):

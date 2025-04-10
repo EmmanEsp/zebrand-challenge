@@ -1,3 +1,7 @@
 p, admin, /*, *
 p, guest, /api/v1/product/*, GET
 p, guest, /api/v1/product, GET
+p, *, /api/v1/auth/sign-in, POST
+p, *, /api/v1/auth/guest, POST
+p, *, /docs, GET
+p, *, /openapi.json, GET

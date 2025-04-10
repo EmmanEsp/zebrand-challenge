@@ -63,12 +63,17 @@ def create_product(product: ProductRequest, use_case: ProductUseCase = Depends()
 
 
 @product_v1_router.patch(
-    "/{product_id}",
+    "/{sku}",
     response_model=APIResponse[None],
     status_code=status.HTTP_200_OK
 )
-def update_product(product_id: int, product: UpdateProductRequest, use_case: ProductUseCase = Depends()) -> APIResponse[None]:
-    use_case.update_product(product_id, product)
+def update_product_by_sku(
+    sku: str, 
+    product: UpdateProductRequest, 
+    use_case: ProductUseCase = Depends()
+) -> APIResponse[None]:
+    print(product)
+    use_case.update_product(sku, product)
     return APIResponse(
         service_status=api_status.SUCCESS,
         status_code=status.HTTP_200_OK,
@@ -77,12 +82,12 @@ def update_product(product_id: int, product: UpdateProductRequest, use_case: Pro
 
 
 @product_v1_router.delete(
-    "/{product_id}",
+    "/{sku}",
     response_model=APIResponse[None],
     status_code=status.HTTP_200_OK
 )
-def update_product(product_id: int, use_case: ProductUseCase = Depends()) -> APIResponse[None]:
-    use_case.delete(product_id)
+def delete_product_by_sku(sku: str, use_case: ProductUseCase = Depends()) -> APIResponse[None]:
+    use_case.delete_product(sku)
     return APIResponse(
         service_status=api_status.SUCCESS,
         status_code=status.HTTP_200_OK,

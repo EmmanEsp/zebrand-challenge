@@ -76,27 +76,26 @@ class ProductUseCase:
         )
         self._service.save_product(new_product)
     
-    def update_product(self, product_id: int, values: UpdateProductRequest) -> None:
-        product = self._service.get_product_by_id(product_id)
+    def update_product(self, sku: str, values: UpdateProductRequest) -> None:
+        product = self._service.get_product_by_sku(sku)
         if product is None:
             raise ProductException(
                 status_code=status.HTTP_404_NOT_FOUND, 
-                detail={"product_id": "Product not found."}
+                detail={"sku": "Product not found."}
             )
         
         update_data = values.model_dump(exclude_unset=True)
         for field, value in update_data.items():
             if hasattr(product, field):
                 setattr(product, field, value)
-        
         self._service.save_product(product)
     
-    def delete_product(self, product_id: int) -> None:
-        product = self._service.get_product_by_id(product_id)
+    def delete_product(self, sku: str) -> None:
+        product = self._service.get_product_by_sku(sku)
         if product is None:
             raise ProductException(
                 status_code=status.HTTP_404_NOT_FOUND, 
-                detail={"product_id": "Product not found."}
+                detail={"sku": "Product not found."}
             )
         product.is_deleted = True
         product.deleted_at = datetime.now()
