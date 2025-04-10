@@ -55,5 +55,6 @@ class UserUseCase:
                 status_code=status.HTTP_404_NOT_FOUND, 
                 detail={"email": "User not found."}
             )
+        user.is_deleted = True
         user.deleted_at = datetime.now()
         self.user_service.save_user(user)
