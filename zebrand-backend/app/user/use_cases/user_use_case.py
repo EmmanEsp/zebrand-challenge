@@ -34,7 +34,7 @@ class UserUseCase:
         self.user_service.save_user(new_user)
     
     def update_user(self, email: str, values: PatchUserRequest):
-        user: UserModel = self.user_service.get_user_by_email(email)
+        user: UserModel = self.user_service.get_active_user_by_email(email)
         if user is None:
             raise UserException(
                 status_code=status.HTTP_404_NOT_FOUND, 
@@ -54,6 +54,11 @@ class UserUseCase:
             raise UserException(
                 status_code=status.HTTP_404_NOT_FOUND, 
                 detail={"email": "User not found."}
+            )
+        if user.is_deleted:
+            raise UserException(
+                status_code=status.HTTP_404_NOT_FOUND, 
+                detail={"email": "User already deleted."}
             )
         user.is_deleted = True
         user.deleted_at = datetime.now()

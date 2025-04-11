@@ -16,7 +16,7 @@ VALUES (
     'string',
     'admin',
     'string@gmail.com',
-    '$argon2id$v=19$m=65536,t=3,p=4$6XdAjxvZbBBR0Rq2F1mTqQ$719IiYlnPMB4aVWMK2o2vLuJoYmm18S6/46RgG4iYO0',
+    '$argon2id$v=19$m=65536,t=3,p=4$e3ySTacZNvWYycldUVjeTw$SgORFB4piQPpbl0qIJQZrwztK0YdgIj5yAXM3hIcIPo',
     '2025-04-09 21:52:01.44675+00',
     NULL,
     NULL

@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, ConfigDict
 from typing import Annotated, Optional
 from decimal import Decimal
 
@@ -24,5 +24,4 @@ class ProductFilterParams(BaseModel):
     size: int = Field(10, ge=1, le=100)
     keyword: Optional[str] = Field(None)
 
-    class Config:
-        validate_by_name = True
+    model_config = ConfigDict(validate_by_name=True)

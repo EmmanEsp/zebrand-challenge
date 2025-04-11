@@ -14,6 +14,9 @@ class UserService:
         return self._db.query(UserModel).filter(UserModel.is_deleted == False)
 
     def get_user_by_email(self, email: str) -> UserModel:
+        return self._db.query(UserModel).filter(UserModel.email == email).first()
+
+    def get_active_user_by_email(self, email: str) -> UserModel:
         return self.get_active_user_query().filter(UserModel.email == email).first()
     
     def save_user(self, user: UserModel):
