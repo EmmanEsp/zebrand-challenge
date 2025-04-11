@@ -5,6 +5,7 @@ from app.domain.enums import api_status
 from app.product.domain.requests.product_request import ProductRequest, UpdateProductRequest, ProductFilterParams
 from app.product.domain.responses.product_response import GetProductResponse, ProductResponse, ProductChanges
 from app.product.use_cases.product_use_case import ProductUseCase
+from app.product.use_cases.product_notification_use_case import ProductNotificationUseCase
 
 
 product_v1_router = APIRouter()
@@ -100,8 +101,8 @@ async def delete_product_by_sku(sku: str, use_case: ProductUseCase = Depends()) 
     response_model=APIResponse[None],
     status_code=status.HTTP_200_OK
 )
-async def delete_product_by_sku(request: Request, use_case: ProductUseCase = Depends()) -> APIResponse[None]:
-    await use_case.send_product_change_email(request, [ProductChanges(field="price", old="1.2", new="1.3")])
+async def delete_product_by_sku(request: Request, use_case: ProductNotificationUseCase = Depends()) -> APIResponse[None]:
+    await use_case.send_update_product_notification(request, [ProductChanges(field="price", old="1.2", new="1.3")])
     return APIResponse(
         service_status=api_status.SUCCESS,
         status_code=status.HTTP_200_OK,
