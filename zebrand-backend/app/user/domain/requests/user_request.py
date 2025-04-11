@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr, Field
 
 from typing import Optional
 
@@ -7,13 +7,13 @@ class UserRequest(BaseModel):
     
     name: str
     role: str
-    email: str
-    password: str
+    email: EmailStr
+    password: str = Field(..., min_length=8, max_length=100)
 
 
 class PatchUserRequest(BaseModel):
     
-    name: Optional[str]
-    role: Optional[str]
-    email: Optional[str]
-    password: Optional[str]
+    name: str = None
+    role: str = None
+    email: EmailStr = None
+    password: str = None

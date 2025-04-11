@@ -1,9 +1,9 @@
-from fastapi import APIRouter, Depends, status, BackgroundTasks
+from fastapi import APIRouter, Depends, status, BackgroundTasks, Request
 
 from app.domain.responses.api_response import APIResponse
 from app.domain.enums import api_status
 from app.product.domain.requests.product_request import ProductRequest, UpdateProductRequest, ProductFilterParams
-from app.product.domain.responses.product_response import GetProductResponse, ProductResponse
+from app.product.domain.responses.product_response import GetProductResponse, ProductResponse, ProductChanges
 from app.product.use_cases.product_use_case import ProductUseCase
 
 
@@ -15,7 +15,7 @@ product_v1_router = APIRouter()
     response_model=APIResponse[GetProductResponse],
     status_code=status.HTTP_200_OK
 )
-def get_all_products(
+async def get_all_products(
     background_tasks: BackgroundTasks,
     filters: ProductFilterParams = Depends(),
     use_case: ProductUseCase = Depends()
@@ -34,7 +34,7 @@ def get_all_products(
     response_model=APIResponse[ProductResponse],
     status_code=status.HTTP_200_OK
 )
-def get_product_by_sku(
+async def get_product_by_sku(
     sku: str,
     background_tasks: BackgroundTasks,
     use_case: ProductUseCase = Depends()
@@ -53,7 +53,7 @@ def get_product_by_sku(
     response_model=APIResponse[None],
     status_code=status.HTTP_201_CREATED
 )
-def create_product(product: ProductRequest, use_case: ProductUseCase = Depends()) -> APIResponse[None]:
+async def create_product(product: ProductRequest, use_case: ProductUseCase = Depends()) -> APIResponse[None]:
     use_case.create_product(product)
     return APIResponse(
         service_status=api_status.SUCCESS,
@@ -67,7 +67,7 @@ def create_product(product: ProductRequest, use_case: ProductUseCase = Depends()
     response_model=APIResponse[None],
     status_code=status.HTTP_200_OK
 )
-def update_product_by_sku(
+async def update_product_by_sku(
     sku: str, 
     product: UpdateProductRequest, 
     use_case: ProductUseCase = Depends()
@@ -86,8 +86,22 @@ def update_product_by_sku(
     response_model=APIResponse[None],
     status_code=status.HTTP_200_OK
 )
-def delete_product_by_sku(sku: str, use_case: ProductUseCase = Depends()) -> APIResponse[None]:
+async def delete_product_by_sku(sku: str, use_case: ProductUseCase = Depends()) -> APIResponse[None]:
     use_case.delete_product(sku)
+    return APIResponse(
+        service_status=api_status.SUCCESS,
+        status_code=status.HTTP_200_OK,
+        data=None
+    )
+
+
+@product_v1_router.post(
+    "/test",
+    response_model=APIResponse[None],
+    status_code=status.HTTP_200_OK
+)
+async def delete_product_by_sku(request: Request, use_case: ProductUseCase = Depends()) -> APIResponse[None]:
+    await use_case.send_product_change_email(request, [ProductChanges(field="price", old="1.2", new="1.3")])
     return APIResponse(
         service_status=api_status.SUCCESS,
         status_code=status.HTTP_200_OK,
