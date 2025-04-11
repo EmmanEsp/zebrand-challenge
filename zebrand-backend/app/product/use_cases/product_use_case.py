@@ -120,6 +120,6 @@ class ProductUseCase:
         if len(tracked_products) > 0:
             self._service.bulk_save_product_visited(tracked_products)
 
-    def track_one_product_visit(self, product: ProductResponse, keyword: str) -> None:
-        tracked_product = ProductTrackViewModel(sku=product.sku, keyword=keyword)
+    def track_one_product_visit(self, product: ProductResponse) -> None:
+        tracked_product = ProductTrackViewModel(sku=product.sku, keyword=product.sku)
         self._service.save_product_visited(tracked_product)

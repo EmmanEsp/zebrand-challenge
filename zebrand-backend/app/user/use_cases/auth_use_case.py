@@ -18,7 +18,15 @@ class AuthUseCase:
         user = self._user_service.get_user_by_email(request.email)
         hasher = PasswordHasher()
 
-        if user is None or not hasher.verify(user.password, request.password):
+        if user is None:
+            raise UserException(
+                status_code=status.HTTP_404_NOT_FOUND, 
+                detail={"auth": "Credentials not found."}
+            )
+        
+        try:
+            hasher.verify(user.password, request.password)
+        except:
             raise UserException(
                 status_code=status.HTTP_400_BAD_REQUEST, 
                 detail={"auth": "Credentials do not match."}

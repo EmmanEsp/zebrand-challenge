@@ -3,7 +3,7 @@ from fastapi import APIRouter, Depends, status, BackgroundTasks, Request
 from app.domain.responses.api_response import APIResponse
 from app.domain.enums import api_status
 from app.product.domain.requests.product_request import ProductRequest, UpdateProductRequest, ProductFilterParams
-from app.product.domain.responses.product_response import GetProductResponse, ProductResponse, ProductChanged
+from app.product.domain.responses.product_response import GetProductResponse, ProductResponse
 from app.product.use_cases.product_use_case import ProductUseCase
 from app.product.use_cases.product_notification_use_case import ProductNotificationUseCase
 
@@ -41,7 +41,7 @@ async def get_product_by_sku(
     use_case: ProductUseCase = Depends()
 ) -> APIResponse[ProductResponse]:
     response = use_case.get_product_by_sku(sku)
-    background_tasks.add_task(use_case.track_one_product_visit, response, sku)
+    background_tasks.add_task(use_case.track_one_product_visit, response)
     return APIResponse(
         service_status=api_status.SUCCESS,
         status_code=status.HTTP_200_OK,
