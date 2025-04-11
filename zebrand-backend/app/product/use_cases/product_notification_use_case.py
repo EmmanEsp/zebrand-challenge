@@ -1,5 +1,4 @@
 from datetime import datetime
-from pathlib import Path
 
 from fastapi import Depends, Request
 from fastapi.security import HTTPBearer
@@ -9,11 +8,12 @@ from jose import jwt
 from jinja2 import Template
 
 from app.product.services.product_service import ProductService
-from app.product.domain.responses.product_response import ProductChanges, ProductChanged
+from app.product.domain.responses.product_response import ProductChanged
 from app.product.domain.templates.product_change_template import product_update_template
 
 from app.domain.settings.security_settings import get_security_setting
 from app.domain.settings.aws_settings import get_ses_client
+from app.infraestructure.logger import logger
 
 
 class ProductNotificationUseCase:
@@ -42,6 +42,10 @@ class ProductNotificationUseCase:
         return emails
 
     async def send_update_product_notification(self, request: Request, product_changes: ProductChanged):
+        logger.info("Start email notification process for product update.")
+        logger.info(request)
+        logger.info(product_changes)
+        
         author = await self.get_author_from_request(request)
         emails = self.get_admin_email_list()
         
@@ -76,4 +80,5 @@ class ProductNotificationUseCase:
             },
             Source=author,
         )
-        print(response)
+        logger.info("Ended notification process")
+        logger.info(response)
