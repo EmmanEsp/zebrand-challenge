@@ -36,7 +36,7 @@ class AuthUseCase:
     def guest(self):
         settings = get_security_setting()
         payload = {
-            "sub": "guest@zebrand.com",
+            "sub": "guest@zebrandchallenge.com",
             "role": "guest"
         }
         token = jwt.encode(payload, settings.secret_key, algorithm=settings.algorithm)

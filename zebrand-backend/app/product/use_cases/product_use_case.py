@@ -4,7 +4,9 @@ from datetime import datetime
 from fastapi import Depends, status
 
 from app.product.services.product_service import ProductService
-from app.product.domain.responses.product_response import ProductResponse, GetProductResponse, PaginationMetadata, ProductChanges
+from app.product.domain.responses.product_response import (
+    ProductResponse, GetProductResponse, PaginationMetadata, ProductChanges, ProductChanged
+)
 from app.product.domain.requests.product_request import ProductRequest, UpdateProductRequest, ProductFilterParams
 from app.product.domain.models.product_model import ProductModel
 from app.product.domain.models.product_track_view_model import ProductTrackViewModel
@@ -75,7 +77,7 @@ class ProductUseCase:
         )
         self._service.save_product(new_product)
     
-    def update_product(self, sku: str, values: UpdateProductRequest) -> list[ProductChanges]:
+    def update_product(self, sku: str, values: UpdateProductRequest) -> ProductChanged:
         product = self._service.get_product_by_sku(sku)
         if product is None:
             raise ProductException(
@@ -84,17 +86,17 @@ class ProductUseCase:
             )
         
         update_data = values.model_dump(exclude_unset=True)
-        changes = []
+        product_changed = ProductChanged(sku=product.sku)
         for field, value in update_data.items():
             if hasattr(product, field):
-                changes.append(ProductChanges(
+                product_changed.changes.append(ProductChanges(
                     field=field,
                     old=str(getattr(product, field)),
                     new=str(value)
                 ))
                 setattr(product, field, value)
         self._service.save_product(product)
-        return changes
+        return product_changed
     
     def delete_product(self, sku: str) -> None:
         product = self._service.get_product_by_sku(sku)

@@ -9,7 +9,8 @@ from jose import jwt
 from jinja2 import Template
 
 from app.product.services.product_service import ProductService
-from app.product.domain.responses.product_response import ProductChanges
+from app.product.domain.responses.product_response import ProductChanges, ProductChanged
+from app.product.domain.templates.product_change_template import product_update_template
 
 from app.domain.settings.security_settings import get_security_setting
 from app.domain.settings.aws_settings import get_ses_client
@@ -40,24 +41,23 @@ class ProductNotificationUseCase:
         emails = [admin.email for admin in admins]
         return emails
 
-    async def send_update_product_notification(self, request: Request, product_changes: list[ProductChanges]):
+    async def send_update_product_notification(self, request: Request, product_changes: ProductChanged):
         author = await self.get_author_from_request(request)
         emails = self.get_admin_email_list()
         
-        changes = [change.model_dump() for change in product_changes]
-        datenow = datetime.now()
-
-        path = Path(__file__).parent.parent
-        template_path = str(path / "domain" / "templates" / "product_change_template.html")
-        template = Template(template_path)
+        changes = [change.model_dump() for change in product_changes.changes]
+        datenow = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        template = Template(product_update_template)
 
         client = get_ses_client()
 
         html_content = template.render(
+            sku=product_changes.sku,
             author=author,
             changes=changes,
             current_date=datenow
         )
+
         response = client.send_email(
             Destination={
                 'ToAddresses': emails,

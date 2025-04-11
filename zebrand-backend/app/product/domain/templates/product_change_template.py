@@ -1,3 +1,4 @@
+product_update_template = """
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -63,7 +64,7 @@
     <div class="content">
         <p>Hello,</p>
         
-        <p>The following changes were made to a product by <strong>{{author}}</strong>:</p>
+        <p>The following changes were made to <strong>{{sku}}</strong> product by <strong>{{author}}</strong>:</p>
         
         <table class="changes-table">
             <thead>
@@ -93,3 +94,4 @@
     </div>
 </body>
 </html>
+"""

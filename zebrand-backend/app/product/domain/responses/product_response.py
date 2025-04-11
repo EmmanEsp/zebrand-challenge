@@ -30,3 +30,9 @@ class ProductChanges(BaseModel):
     field: str
     old: str
     new: str
+
+
+class ProductChanged(BaseModel):
+    
+    sku: str
+    changes: list[ProductChanges] = []
