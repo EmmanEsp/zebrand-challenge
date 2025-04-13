@@ -1,4 +1,20 @@
-# Project Setup & Usage Guide
+# Project Info, Setup & Usage Guide
+
+## 🛠️ Technologies Used
+
+This project leverages the following tools and technologies:
+
+- **Python Casbin** – Role-Based Access Control (RBAC)
+- **FastAPI** – High-performance web framework for building APIs
+- **SQLAlchemy ORM** – Database access and query abstraction
+- **PostgreSQL** – Primary data store
+- **Argon2** – Secure password hashing algorithm
+- **Python-JOSE** – JWT handling (signing and verification)
+- **Boto3** – AWS SDK for Python (used for AWS SES email delivery)
+- **Jinja2** – Templating engine for rendering HTML email templates
+- **Docker** – Containerization for development and deployment
+
+---
 
 ## ✅ Requirements
 
