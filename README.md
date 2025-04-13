@@ -66,6 +66,10 @@ Finally, start the backend service:
 make start
 ```
 
+Now you are able to use the project, go to:
+
+http://127.0.0.1:8000/docs
+
 ---
 
 ## 🚀 How to Use the Project
