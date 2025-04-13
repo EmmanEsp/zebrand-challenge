@@ -53,7 +53,7 @@ class CasbinMiddleware:
             return await self.app(scope, receive, send)
 
         user_payload = await self.get_current_user_role(request)
-        if not user_payload or "role" not in user_payload:
+        if user_payload is None or "role" not in user_payload:
             response = JSONResponse(
                 status_code=status.HTTP_403_FORBIDDEN,
                 content={
