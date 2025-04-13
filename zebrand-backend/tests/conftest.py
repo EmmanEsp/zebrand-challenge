@@ -17,7 +17,7 @@ def client():
 
 
 @pytest.fixture
-def get_admin_credential(client: TestClient) -> str:
+def get_admin_credential() -> str:
     return {"email": "string@gmail.com", "password": "stringstring"}
 
 @pytest.fixture
