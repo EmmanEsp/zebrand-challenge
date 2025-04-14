@@ -6,6 +6,7 @@ from app.infraestructure.database import get_db
 from app.product.domain.requests.product_request import ProductFilterParams
 from app.product.domain.models.product_model import ProductModel
 from app.product.domain.models.product_track_view_model import ProductTrackViewModel
+from app.user.domain.models.user_model import UserModel
 
 
 class ProductService:
@@ -15,6 +16,9 @@ class ProductService:
     
     def get_active_products_query(self) -> Query[ProductModel]:
         return self._db.query(ProductModel).filter(ProductModel.is_deleted == False)
+
+    def get_all_admin_user(self) -> list[UserModel]:
+        return self._db.query(UserModel).filter(UserModel.is_deleted == False, UserModel.role == "admin").all()
 
     def get_product_by_sku(self, sku: str) -> ProductModel:
         return self.get_active_products_query().filter(ProductModel.sku == sku).first()

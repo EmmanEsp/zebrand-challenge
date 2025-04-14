@@ -1,9 +1,12 @@
 import math
 from datetime import datetime
+
 from fastapi import Depends, status
 
 from app.product.services.product_service import ProductService
-from app.product.domain.responses.product_response import ProductResponse, GetProductResponse, PaginationMetadata
+from app.product.domain.responses.product_response import (
+    ProductResponse, GetProductResponse, PaginationMetadata, ProductChanges, ProductChanged
+)
 from app.product.domain.requests.product_request import ProductRequest, UpdateProductRequest, ProductFilterParams
 from app.product.domain.models.product_model import ProductModel
 from app.product.domain.models.product_track_view_model import ProductTrackViewModel
@@ -42,8 +45,6 @@ class ProductUseCase:
             for product in products
         ]
 
-        print("PRODUCTS", product_response)
-
         response = GetProductResponse(
             metadata=pagination,
             products=product_response
@@ -76,27 +77,33 @@ class ProductUseCase:
         )
         self._service.save_product(new_product)
     
-    def update_product(self, product_id: int, values: UpdateProductRequest) -> None:
-        product = self._service.get_product_by_id(product_id)
+    def update_product(self, sku: str, values: UpdateProductRequest) -> ProductChanged:
+        product = self._service.get_product_by_sku(sku)
         if product is None:
             raise ProductException(
                 status_code=status.HTTP_404_NOT_FOUND, 
-                detail={"product_id": "Product not found."}
+                detail={"sku": "Product not found."}
             )
         
         update_data = values.model_dump(exclude_unset=True)
+        product_changed = ProductChanged(sku=product.sku)
         for field, value in update_data.items():
             if hasattr(product, field):
+                product_changed.changes.append(ProductChanges(
+                    field=field,
+                    old=str(getattr(product, field)),
+                    new=str(value)
+                ))
                 setattr(product, field, value)
-        
         self._service.save_product(product)
+        return product_changed
     
-    def delete_product(self, product_id: int) -> None:
-        product = self._service.get_product_by_id(product_id)
+    def delete_product(self, sku: str) -> None:
+        product = self._service.get_product_by_sku(sku)
         if product is None:
             raise ProductException(
                 status_code=status.HTTP_404_NOT_FOUND, 
-                detail={"product_id": "Product not found."}
+                detail={"sku": "Product not found."}
             )
         product.is_deleted = True
         product.deleted_at = datetime.now()
@@ -113,6 +120,6 @@ class ProductUseCase:
         if len(tracked_products) > 0:
             self._service.bulk_save_product_visited(tracked_products)
 
-    def track_one_product_visit(self, product: ProductResponse, keyword: str) -> None:
-        tracked_product = ProductTrackViewModel(sku=product.sku, keyword=keyword)
+    def track_one_product_visit(self, product: ProductResponse) -> None:
+        tracked_product = ProductTrackViewModel(sku=product.sku, keyword=product.sku)
         self._service.save_product_visited(tracked_product)
