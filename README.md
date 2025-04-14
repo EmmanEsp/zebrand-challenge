@@ -126,3 +126,14 @@ You can now access endpoints based on your token type:
 
 ### 🔒 Endpoints Available for Admin Token
 - All endpoints
+
+---
+
+## 🚀 System Context
+
+![image](https://github.com/user-attachments/assets/3db51bf5-4d6a-4412-8a08-450b2bc579f1)
+
+![image](https://github.com/user-attachments/assets/634262dc-b658-4471-ac91-8ffaeab98f25)
+
+![image](https://github.com/user-attachments/assets/ed626415-ae84-42d6-993b-234983fa8159)
+
